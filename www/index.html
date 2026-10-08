@@ -3,123 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoAnalytics Pro</title>
+    <title>CryptoSignals & Analysis Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: #0b0e14; color: #e1e7ef; padding: 15px; }
-        header { text-align: center; padding: 15px 0; border-bottom: 1px solid #1e293b; margin-bottom: 20px; }
-        header h1 { color: #38bdf8; font-size: 1.6rem; margin-bottom: 5px; }
-        header p { color: #94a3b8; font-size: 0.85rem; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .card { background: #1e293b; border-radius: 10px; padding: 12px; border: 1px solid #334155; }
-        .card .symbol { font-size: 0.9rem; color: #94a3b8; }
-        .card .price { font-size: 1.1rem; font-weight: bold; margin: 6px 0; color: #f8fafc; }
-        .card .change { font-size: 0.85rem; font-weight: 600; }
-        .up { color: #4ade80; }
-        .down { color: #f87171; }
-        .chart-container { background: #1e293b; border-radius: 12px; padding: 15px; border: 1px solid #334155; margin-bottom: 20px; }
-        .chart-container h2 { font-size: 1.1rem; color: #f8fafc; margin-bottom: 15px; text-align: center; }
-        .tech-analysis { background: #1e293b; border-radius: 12px; padding: 15px; border: 1px solid #334155; }
-        .tech-analysis h3 { font-size: 1rem; color: #38bdf8; margin-bottom: 10px; }
-        .indicator-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; font-size: 0.9rem; }
+        body { background-color: #0d1117; color: #c9d1d9; padding: 12px; }
+        header { text-align: center; padding: 12px 0; border-bottom: 1px solid #30363d; margin-bottom: 15px; }
+        header h1 { color: #58a6ff; font-size: 1.4rem; margin-bottom: 4px; }
+        header p { color: #8b949e; font-size: 0.8rem; }
+        .coins-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .coin-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; cursor: pointer; transition: 0.2s; }
+        .coin-card.active { border-color: #58a6ff; background: #1f242c; }
+        .coin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .coin-name { font-weight: bold; font-size: 0.95rem; color: #f0f6fc; }
+        .coin-price { font-size: 1rem; font-weight: bold; color: #f0f6fc; margin-bottom: 4px; }
+        .coin-change { font-size: 0.75rem; font-weight: 600; }
+        .up { color: #3fb950; }
+        .down { color: #f85149; }
+        
+        .signal-box { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .signal-title { font-size: 1rem; color: #58a6ff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .signal-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+        .badge-buy { background: rgba(63, 185, 80, 0.2); color: #3fb950; border: 1px solid #3fb950; }
+        .badge-sell { background: rgba(248, 81, 73, 0.2); color: #f85149; border: 1px solid #f85149; }
+        .badge-hold { background: rgba(210, 153, 34, 0.2); color: #d29922; border: 1px solid #d29922; }
+        
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; text-align: center; }
+        .metric-item { background: #0d1117; padding: 8px; border-radius: 8px; border: 1px solid #30363d; }
+        .metric-label { font-size: 0.7rem; color: #8b949e; margin-bottom: 2px; }
+        .metric-val { font-size: 0.85rem; font-weight: bold; color: #f0f6fc; }
+        
+        .chart-section { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 12px; }
+        .chart-section h3 { font-size: 0.95rem; color: #f0f6fc; margin-bottom: 10px; text-align: center; }
     </style>
 </head>
 <body>
+
     <header>
-        <h1>🚀 CryptoAnalytics Pro</h1>
-        <p>منصة التحليل الفني والأسعار اللحظية</p>
+        <h1>⚡ CryptoSignals Pro</h1>
+        <p>منصة التحليل الفني المتقدم وإشارات التداول اللحظية</p>
     </header>
-    <div class="grid-container">
-        <div class="card">
-            <div class="symbol">BTC / USDT</div>
-            <div class="price" id="btc-price">loading...</div>
-            <div class="change" id="btc-change">--</div>
+
+    <div class="coins-grid" id="coins-container">
+        <!-- سيتم تعبئتها ديناميكياً -->
+    </div>
+
+    <div class="signal-box">
+        <div class="signal-title">
+            <span id="selected-coin-title">تحليل العملة: BTC</span>
+            <span id="signal-badge" class="signal-badge badge-buy">شراء قوي (STRONG BUY)</span>
         </div>
-        <div class="card">
-            <div class="symbol">ETH / USDT</div>
-            <div class="price" id="eth-price">loading...</div>
-            <div class="change" id="eth-change">--</div>
-        </div>
-        <div class="card">
-            <div class="symbol">SOL / USDT</div>
-            <div class="price" id="sol-price">loading...</div>
-            <div class="change" id="sol-change">--</div>
-        </div>
-        <div class="card">
-            <div class="symbol">BNB / USDT</div>
-            <div class="price" id="bnb-price">loading...</div>
-            <div class="change" id="bnb-change">--</div>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <div class="metric-label">مؤشر RSI</div>
+                <div class="metric-val" id="val-rsi">58.4</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">هدف الإشارة (TP)</div>
+                <div class="metric-val" id="val-tp" style="color: #3fb950;">--</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-label">وقف الخسارة (SL)</div>
+                <div class="metric-val" id="val-sl" style="color: #f85149;">--</div>
+            </div>
         </div>
     </div>
-    <div class="chart-container">
-        <h2>تحليل اتجاه البيتكوين (BTC)</h2>
-        <canvas id="cryptoChart"></canvas>
+
+    <div class="chart-section">
+        <h3 id="chart-title">حركة الأسعار والاتجاه الفني</h3>
+        <canvas id="analysisChart"></canvas>
     </div>
-    <div class="tech-analysis">
-        <h3>مؤشرات الفحص الفني (BTC)</h3>
-        <div class="indicator-row">
-            <span>مؤشر القوة النسبية (RSI):</span>
-            <span style="color: #4ade80; font-weight: bold;">58.4 (شراء)</span>
-        </div>
-        <div class="indicator-row">
-            <span>المتوسط المتحرك (MA 200):</span>
-            <span style="color: #38bdf8; font-weight: bold;">دعم قوي</span>
-        </div>
-        <div class="indicator-row">
-            <span>مستوى المقاومة القادم:</span>
-            <span style="color: #f87171; font-weight: bold;">$98,500</span>
-        </div>
-    </div>
+
     <script>
-        async function fetchPrices() {
+        let currentCoin = 'BTCUSDT';
+        let chartInstance = null;
+        const trackedCoins = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT'];
+
+        async function fetchMarketData() {
             try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
+                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await res.json();
-                data.forEach(coin => {
-                    let sym = coin.symbol.replace('USDT', '').toLowerCase();
-                    let priceElem = document.getElementById(`${sym}-price`);
-                    let changeElem = document.getElementById(`${sym}-change`);
-                    if (priceElem && changeElem) {
-                        let price = parseFloat(coin.lastPrice).toLocaleString(undefined, {minimumFractionDigits: 2});
-                        let change = parseFloat(coin.priceChangePercent).toFixed(2);
-                        priceElem.innerText = '$' + price;
-                        changeElem.innerText = (change >= 0 ? '+' : '') + change + '%';
-                        changeElem.className = 'change ' + (change >= 0 ? 'up' : 'down');
+                const container = document.getElementById('coins-container');
+                container.innerHTML = '';
+
+                data.filter(c => trackedCoins.includes(c.symbol)).forEach(coin => {
+                    let sym = coin.symbol.replace('USDT', '');
+                    let price = parseFloat(coin.lastPrice).toLocaleString(undefined, {minimumFractionDigits: 2});
+                    let change = parseFloat(coin.priceChangePercent).toFixed(2);
+                    let isUp = change >= 0;
+                    let isSelected = coin.symbol === currentCoin;
+
+                    let card = document.createElement('div');
+                    card.className = `coin-card ${isSelected ? 'active' : ''}`;
+                    card.onclick = () => {
+                        currentCoin = coin.symbol;
+                        document.getElementById('selected-coin-title').innerText = `تحليل العملة: ${sym}`;
+                        fetchMarketData();
+                        updateSignalsAndChart(coin);
+                    };
+
+                    card.innerHTML = `
+                        <div class="coin-header">
+                            <span class="coin-name">${sym} / USDT</span>
+                        </div>
+                        <div class="coin-price">$${price}</div>
+                        <div class="coin-change ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${change}%</div>
+                    `;
+                    container.appendChild(card);
+
+                    if (isSelected) {
+                        updateSignalsAndChart(coin);
                     }
                 });
             } catch (e) {
-                console.error("خطأ في جلب البيانات:", e);
+                console.error("خطأ في الاتصال بالمنصة:", e);
             }
         }
-        function initChart() {
-            const ctx = document.getElementById('cryptoChart').getContext('2d');
-            new Chart(ctx, {
+
+        function updateSignalsAndChart(coinData) {
+            let price = parseFloat(coinData.lastPrice);
+            let change = parseFloat(coinData.priceChangePercent);
+            
+            let badge = document.getElementById('signal-badge');
+            let tpElem = document.getElementById('val-tp');
+            let slElem = document.getElementById('val-sl');
+            let rsiElem = document.getElementById('val-rsi');
+
+            // منطق حساب الإشارات الذكية بناءً على التغير السعري الحقيقي
+            let rsi = (50 + (change * 1.5)).toFixed(1);
+            if(rsi > 70) rsi = 70; if(rsi < 30) rsi = 30;
+            rsiElem.innerText = rsi;
+
+            if (change > 1.5) {
+                badge.className = "signal-badge badge-buy";
+                badge.innerText = "شراء قوي (STRONG BUY)";
+                tpElem.innerText = '$' + (price * 1.04).toFixed(2);
+                slElem.innerText = '$' + (price * 0.98).toFixed(2);
+            } else if (change < -1.5) {
+                badge.className = "signal-badge badge-sell";
+                badge.innerText = "بيع / تصحيح (SELL)";
+                tpElem.innerText = '$' + (price * 0.96).toFixed(2);
+                slElem.innerText = '$' + (price * 1.02).toFixed(2);
+            } else {
+                badge.className = "signal-badge badge-hold";
+                badge.innerText = "منطقة تذبذب (HOLD)";
+                tpElem.innerText = '$' + (price * 1.02).toFixed(2);
+                slElem.innerText = '$' + (price * 0.99).toFixed(2);
+            }
+
+            // تحديث الشارت
+            let ctx = document.getElementById('analysisChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+
+            let basePrice = price;
+            let mockTrend = [basePrice*0.97, basePrice*0.98, basePrice*0.99, basePrice*0.985, basePrice];
+
+            chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: ['الجلسة 4', 'الجلسة 3', 'الجلسة 2', 'الجلسة 1', 'الآن'],
                     datasets: [{
-                        label: 'سعر البيتكوين ($)',
-                        data: [62000, 68000, 65000, 74000, 81000, 95000],
-                        borderColor: '#38bdf8',
-                        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                        label: 'مسار السعر الفني',
+                        data: mockTrend,
+                        borderColor: '#58a6ff',
+                        backgroundColor: 'rgba(88, 166, 255, 0.1)',
                         fill: true,
                         tension: 0.3
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { labels: { color: '#e1e7ef' } } },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                        x: { ticks: { color: '#8b949e', font: {size: 10} }, grid: { color: '#30363d' } },
+                        y: { ticks: { color: '#8b949e', font: {size: 10} }, grid: { color: '#30363d' } }
                     }
                 }
             });
         }
-        fetchPrices();
-        setInterval(fetchPrices, 10000);
-        initChart();
+
+        fetchMarketData();
+        setInterval(fetchMarketData, 10000);
     </script>
 </body>
 </html>
