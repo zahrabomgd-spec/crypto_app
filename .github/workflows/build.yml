@@ -13,25 +13,28 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up JDK 17
+    - name: Set up JDK 11
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '11'
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '18'
 
-    - name: Install Cordova and Create App Structure
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install Cordova and Build APK
       run: |
-        npm install -g cordova
+        npm install -g cordova@11.1.0
         cd ..
         cordova create temp_app com.crypto.app "CryptoAnalytics"
         cp -r crypto_app/* temp_app/www/ 2>/dev/null || true
         cd temp_app
-        cordova platform add android@12.0.0
+        cordova platform add android@10.1.2
         cordova build android --debug
         mkdir -p ../crypto_app/output
         cp platforms/android/app/build/outputs/apk/debug/app-debug.apk ../crypto_app/output/app-debug.apk
