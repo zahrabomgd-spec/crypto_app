@@ -24,14 +24,21 @@ jobs:
       with:
         node-version: '18'
 
-    - name: Install Cordova and Build APK
+    - name: Install Cordova and Build Clean Project
       run: |
         npm install -g cordova
-        cordova platform add android || true
+        cd ..
+        cordova create clean_app com.crypto.app "CryptoAnalytics"
+        cd clean_app
+        rm -rf www/*
+        cp -r ../crypto_app/www/* www/
+        cordova platform add android
         cordova build android --debug
+        mkdir -p ../crypto_app/output
+        cp platforms/android/app/build/outputs/apk/debug/app-debug.apk ../crypto_app/output/app-debug.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: CryptoAnalytics-APK
-        path: platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        path: output/app-debug.apk
