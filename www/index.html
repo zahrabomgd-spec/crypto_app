@@ -26,12 +26,10 @@
     </style>
 </head>
 <body>
-
     <header>
         <h1>🚀 CryptoAnalytics Pro</h1>
         <p>منصة التحليل الفني والأسعار اللحظية</p>
     </header>
-
     <div class="grid-container">
         <div class="card">
             <div class="symbol">BTC / USDT</div>
@@ -54,12 +52,10 @@
             <div class="change" id="bnb-change">--</div>
         </div>
     </div>
-
     <div class="chart-container">
         <h2>تحليل اتجاه البيتكوين (BTC)</h2>
         <canvas id="cryptoChart"></canvas>
     </div>
-
     <div class="tech-analysis">
         <h3>مؤشرات الفحص الفني (BTC)</h3>
         <div class="indicator-row">
@@ -75,22 +71,18 @@
             <span style="color: #f87171; font-weight: bold;">$98,500</span>
         </div>
     </div>
-
     <script>
         async function fetchPrices() {
             try {
                 const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
                 const data = await res.json();
-                
                 data.forEach(coin => {
                     let sym = coin.symbol.replace('USDT', '').toLowerCase();
                     let priceElem = document.getElementById(`${sym}-price`);
                     let changeElem = document.getElementById(`${sym}-change`);
-                    
                     if (priceElem && changeElem) {
                         let price = parseFloat(coin.lastPrice).toLocaleString(undefined, {minimumFractionDigits: 2});
                         let change = parseFloat(coin.priceChangePercent).toFixed(2);
-                        
                         priceElem.innerText = '$' + price;
                         changeElem.innerText = (change >= 0 ? '+' : '') + change + '%';
                         changeElem.className = 'change ' + (change >= 0 ? 'up' : 'down');
@@ -100,7 +92,6 @@
                 console.error("خطأ في جلب البيانات:", e);
             }
         }
-
         function initChart() {
             const ctx = document.getElementById('cryptoChart').getContext('2d');
             new Chart(ctx, {
@@ -126,7 +117,6 @@
                 }
             });
         }
-
         fetchPrices();
         setInterval(fetchPrices, 10000);
         initChart();
