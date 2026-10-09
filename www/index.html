@@ -95,7 +95,6 @@
                 const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await res.json();
                 
-                // تصفية أبرز العملات القوية والشهيرة
                 const targetSymbols = [
                     'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 
                     'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'DOTUSDT', 'MATICUSDT',
@@ -168,7 +167,7 @@
             let trendTag = document.getElementById('detail-trend-tag');
             let rsiVal = (50 + (change * 1.2)).toFixed(1);
             if(rsiVal > 80) rsiVal = 80; if(rsiVal < 20) rsiVal = 20;
-            document.getElementById('val-rsi').innerText = rsiVal + ' (مؤشر قوة الزخم)';
+            document.getElementById('val-rsi').innerText = rsiVal + ' (قوة الزخم)';
 
             if (change > 0.5) {
                 trendTag.className = "analysis-badge trend-bullish";
@@ -184,7 +183,6 @@
                 trendTag.innerText = "مسار عرضي مستقر (Neutral)";
             }
 
-            // رسم الشارت التحليلي
             let ctx = document.getElementById('marketChart').getContext('2d');
             if(marketChartInstance) marketChartInstance.destroy();
 
