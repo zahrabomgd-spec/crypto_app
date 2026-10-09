@@ -3,54 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Pro Terminal</title>
+    <title>Crypto Pro Enterprise</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: #0b0e14; color: #f0f6fc; padding: 12px; font-size: 13px; }
+        body { background-color: #0d1117; color: #f0f6fc; padding: 10px; font-size: 13px; padding-bottom: 70px; }
         
-        /* الهيدر */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; margin-bottom: 12px; }
-        .logo h1 { color: #58a6ff; font-size: 1.15rem; font-weight: 700; }
-        .logo p { color: #8b949e; font-size: 0.7rem; margin-top: 2px; }
-        .live-badge { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; background: rgba(46, 160, 67, 0.15); color: #3fb950; padding: 5px 10px; border-radius: 20px; border: 1px solid #2ea043; font-weight: 600; }
-        .dot { width: 8px; height: 8px; background: #3fb950; border-radius: 50%; animation: pulse 1.5s infinite; }
+        /* الهيدر العلوي */
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; margin-bottom: 10px; }
+        .logo h1 { color: #58a6ff; font-size: 1.1rem; font-weight: 700; }
+        .logo p { color: #8b949e; font-size: 0.68rem; margin-top: 2px; }
+        .live-badge { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; background: rgba(46, 160, 67, 0.15); color: #3fb950; padding: 4px 8px; border-radius: 20px; border: 1px solid #2ea043; font-weight: 600; }
+        .dot { width: 7px; height: 7px; background: #3fb950; border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* البحث والتصنيفات */
-        .search-box { width: 100%; padding: 10px 14px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; color: #fff; font-size: 0.85rem; outline: none; margin-bottom: 10px; transition: 0.2s; }
-        .search-box:focus { border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15); }
+        /* شريط التنقل السفلي (Tabs) */
+        .nav-tabs { position: fixed; bottom: 0; left: 0; right: 0; background: #161b22; border-top: 1px solid #30363d; display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
+        .tab-btn { background: none; border: none; color: #8b949e; font-size: 0.75rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; font-weight: 600; }
+        .tab-btn.active { color: #58a6ff; }
+        .tab-btn span.icon { font-size: 1.2rem; }
 
-        .categories { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
-        .cat-btn { background: #161b22; border: 1px solid #30363d; color: #8b949e; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; font-weight: 600; transition: 0.2s; }
-        .cat-btn.active { background: #1f6feb; color: #fff; border-color: #388bfd; }
+        /* أقسام التطبيق */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        /* قائمة العملات الأفقيّة */
-        .coins-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: thin; }
-        .coin-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px 12px; min-width: 125px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .coin-card:hover, .coin-card.active { border-color: #58a6ff; background: #1c2128; transform: translateY(-1px); }
-        .c-sym { font-weight: 700; font-size: 0.9rem; color: #f0f6fc; }
-        .c-price { font-size: 0.82rem; margin: 4px 0; color: #c9d1d9; font-family: monospace; }
-        .c-chg { font-size: 0.72rem; font-weight: 700; }
+        /* الأقسام والبطاقات */
+        .search-box { width: 100%; padding: 10px 14px; background: #161b22; border: 1px solid #30363d; border-radius: 10px; color: #fff; font-size: 0.85rem; outline: none; margin-bottom: 10px; }
+        .search-box:focus { border-color: #58a6ff; }
 
-        /* لوحة التحليل والتفاصيل الشاملة */
-        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #21262d; padding-bottom: 8px; }
-        .panel-title { font-size: 1rem; font-weight: bold; color: #58a6ff; }
+        .panel { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+        .panel-title { font-size: 0.95rem; font-weight: bold; color: #58a6ff; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+        .coin-row { display: flex; justify-content: space-between; align-items: center; background: #0d1117; border: 1px solid #21262d; padding: 10px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: 0.2s; }
+        .coin-row:hover { border-color: #58a6ff; }
+        .c-info div:first-child { font-weight: bold; font-size: 0.9rem; }
+        .c-info div:last-child { color: #8b949e; font-size: 0.7rem; }
+        .c-price-box { text-align: left; }
+        .c-price { font-family: monospace; font-size: 0.85rem; font-weight: bold; }
+        .c-chg { font-size: 0.72rem; font-weight: bold; }
+
+        /* المحفظة الاستثمارية */
+        .portfolio-summary { background: linear-gradient(135deg, #1f6feb, #1158c7); border-radius: 10px; padding: 14px; margin-bottom: 10px; text-align: center; }
+        .portfolio-summary h3 { font-size: 0.8rem; opacity: 0.85; }
+        .portfolio-summary .total-val { font-size: 1.5rem; font-weight: bold; margin-top: 5px; font-family: monospace; }
         
-        /* شبكة الإحصائيات */
-        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-        .metric-box { background: #0d1117; border: 1px solid #21262d; padding: 10px; border-radius: 8px; }
-        .m-label { font-size: 0.7rem; color: #8b949e; }
-        .m-val { font-size: 0.9rem; font-weight: bold; color: #f0f6fc; margin-top: 3px; font-family: monospace; }
-
-        /* قسم التحويل السريع (حاسبة) */
-        .converter-box { background: #0d1117; border: 1px solid #21262d; padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
-        .converter-box input { width: 45%; background: #161b22; border: 1px solid #30363d; border-radius: 6px; color: #fff; padding: 6px 10px; font-size: 0.85rem; outline: none; }
-        .converter-box span { color: #8b949e; font-size: 0.8rem; font-weight: bold; }
-
-        /* الشارت الفني */
-        .chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 12px; }
+        .form-group { margin-bottom: 8px; }
+        .form-group label { display: block; font-size: 0.72rem; color: #8b949e; margin-bottom: 3px; }
+        .form-control { width: 100%; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 8px; color: #fff; font-size: 0.82rem; outline: none; }
+        .btn { background: #2ea043; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; width: 100%; cursor: pointer; font-size: 0.85rem; margin-top: 5px; }
+        .btn:hover { background: #238636; }
 
         .up { color: #3fb950 !important; }
         .down { color: #f85149 !important; }
@@ -58,74 +59,101 @@
 </head>
 <body>
 
+    <!-- الهيدر -->
     <header>
         <div class="logo">
-            <h1>⚡ Crypto Pro Terminal</h1>
-            <p>منصة التداول وتحليل العملات اللحظية بدقة فائقة</p>
+            <h1>⚡ Crypto Pro Enterprise</h1>
+            <p>منصة التداول وتحليل الأسواق المؤسسية</p>
         </div>
         <div class="live-badge">
-            <div class="dot"></div> متصل بالسوق
+            <div class="dot"></div> متصل بالبث الحي
         </div>
     </header>
 
-    <input type="text" id="search-input" class="search-box" placeholder="ابحث بأي عملة (BTC, ETH, PEPE, BTTC, SOL...)" onkeyup="filterCoins()">
-
-    <div class="categories">
-        <button class="cat-btn active" onclick="setCategory('all', this)">🔥 الأبرز والأكثر تداولاً</button>
-        <button class="cat-btn" onclick="setCategory('memes', this)">🐸 عملات الميم (Memes)</button>
-        <button class="cat-btn" onclick="setCategory('gainers', this)">🚀 الأكثر صعوداً</button>
-        <button class="cat-btn" onclick="setCategory('losers', this)">🔻 الأكثر هبوطاً</button>
-    </div>
-
-    <!-- شريط العملات السريع -->
-    <div class="coins-scroll" id="coins-scroll"></div>
-
-    <!-- لوحة التفاصيل والتحليل -->
-    <div class="panel">
-        <div class="panel-header">
-            <span class="panel-title" id="p-title">BTC / USDT</span>
-            <span id="p-signal" class="m-val up">اتجاه إيجابي</span>
-        </div>
-
-        <div class="metrics-grid">
-            <div class="metric-box">
-                <div class="m-label">السعر الفوري الدقيق</div>
-                <div class="m-val" id="m-price">--</div>
-            </div>
-            <div class="metric-box">
-                <div class="m-label">التغير (24 ساعة)</div>
-                <div class="m-val" id="m-change">--</div>
-            </div>
-            <div class="metric-box">
-                <div class="m-label">أعلى / أدنى سعر (24س)</div>
-                <div class="m-val" id="m-highlow" style="font-size: 0.75rem;">--</div>
-            </div>
-            <div class="metric-box">
-                <div class="m-label">حجم التداول اليومي</div>
-                <div class="m-val" id="m-volume" style="font-size: 0.78rem;">--</div>
-            </div>
-        </div>
-
-        <!-- حاسبة التحويل الفوري -->
-        <div class="converter-box">
-            <input type="number" id="qty-input" value="1" min="0" oninput="convertCurrency()" placeholder="الكمية">
-            <span id="conv-label">وحدة = </span>
-            <input type="text" id="res-input" readonly placeholder="القيمة بالدولار" style="background: #161b22; color: #3fb950; font-weight: bold;">
+    <!-- القسم الأول: الأسواق -->
+    <div id="tab-market" class="tab-content active">
+        <input type="text" id="search-input" class="search-box" placeholder="ابحث عن عملة (BTC, ETH, PEPE, SOL...)" onkeyup="filterMarket()">
+        
+        <div class="panel">
+            <div class="panel-title">قائمة الأسواق اللحظية</div>
+            <div id="market-list">جاري تحميل البيانات...</div>
         </div>
     </div>
 
-    <!-- الشارت -->
-    <div class="chart-box">
-        <canvas id="mainChart" height="120"></canvas>
+    <!-- القسم الثاني: تفاصيل والشارت المتقدم -->
+    <div id="tab-trade" class="tab-content">
+        <div class="panel">
+            <div class="panel-title" id="trade-title">BTC / USDT</div>
+            <div style="font-family: monospace; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;" id="trade-price">--</div>
+            <canvas id="enterpriseChart" height="140"></canvas>
+        </div>
+        <div class="panel">
+            <div class="panel-title">حاسبة التحويل السريع</div>
+            <div class="form-group">
+                <label>الكمية</label>
+                <input type="number" id="calc-qty" class="form-control" value="1" oninput="calculateTrade()">
+            </div>
+            <div class="form-group">
+                <label>القيمة الإجمالية بالدولار (USDT)</label>
+                <input type="text" id="calc-result" class="form-control" readonly style="color: #3fb950; font-weight: bold;">
+            </div>
+        </div>
     </div>
+
+    <!-- القسم الثالث: المحفظة الاستثمارية -->
+    <div id="tab-portfolio" class="tab-content">
+        <div class="portfolio-summary">
+            <h3>إجمالي محفظتك الاستثمارية</h3>
+            <div class="total-val" id="port-total">$0.00</div>
+        </div>
+        <div class="panel">
+            <div class="panel-title">إضافة صفقة جديدة للمحفظة</div>
+            <div class="form-group">
+                <label>رمز العملة (مثال: BTC, ETH, PEPE)</label>
+                <input type="text" id="p-sym" class="form-control" placeholder="BTC">
+            </div>
+            <div class="form-group">
+                <label>الكمية المشتراة</label>
+                <input type="number" id="p-amount" class="form-control" placeholder="0.5">
+            </div>
+            <button class="btn" onclick="addToPortfolio()">إضافة للمحفظة</button>
+        </div>
+        <div class="panel">
+            <div class="panel-title">أصولك المملوكة</div>
+            <div id="portfolio-items">لا توجد صفقات مضافة حالياً.</div>
+        </div>
+    </div>
+
+    <!-- القسم الرابع: التحليل الفني والمؤشرات -->
+    <div id="tab-analytics" class="tab-content">
+        <div class="panel">
+            <div class="panel-title">تحليلات السوق الذكية ومؤشر RSI</div>
+            <div id="analytics-list">جاري حساب المؤشرات الفنية...</div>
+        </div>
+    </div>
+
+    <!-- شريط التنقل السفلي -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('market', this)">
+            <span class="icon">📈</span>الأسواق
+        </button>
+        <button class="tab-btn" onclick="switchTab('trade', this)">
+            <span class="icon">📊</span>التداول والشارت
+        </button>
+        <button class="tab-btn" onclick="switchTab('portfolio', this)">
+            <span class="icon">💼</span>المحفظة
+        </button>
+        <button class="tab-btn" onclick="switchTab('analytics', this)">
+            <span class="icon">🔍</span>التحليل الفني
+        </button>
+    </nav>
 
     <script>
         let rawData = [];
         let currentSymbol = 'BTCUSDT';
-        let currentFilter = 'all';
         let chartInstance = null;
+        let portfolio = JSON.parse(localStorage.getItem('crypto_portfolio')) || [];
 
-        // دالة ذكية لتنسيق الأسعار مهما كانت صغيرة (مثل PEPE و BTTC و SHIB)
         function formatPrecisePrice(price) {
             if (price >= 1000) return '$' + price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
             if (price >= 1) return '$' + price.toFixed(4);
@@ -138,132 +166,100 @@
             try {
                 let res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 rawData = await res.json();
-                renderUI();
+                renderMarket();
+                renderPortfolio();
+                renderAnalytics();
+                if (document.getElementById('tab-trade').classList.contains('active')) {
+                    updateTradeView();
+                }
             } catch (e) {
-                console.error("خطأ في جلب البيانات:", e);
+                console.error("خطأ في الاتصال بالبث الحي:", e);
             }
         }
 
-        function setCategory(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
             btn.classList.add('active');
-            currentFilter = cat;
-            renderUI();
+            if (tabId === 'trade') updateTradeView();
         }
 
-        function filterCoins() {
-            renderUI();
-        }
-
-        function renderUI() {
+        function renderMarket() {
             let query = document.getElementById('search-input').value.toUpperCase();
-            let scroll = document.getElementById('coins-scroll');
-            scroll.innerHTML = '';
+            let container = document.getElementById('market-list');
+            container.innerHTML = '';
 
             let list = rawData.filter(c => c.symbol.endsWith('USDT'));
-
-            if (query) {
-                list = list.filter(c => c.symbol.includes(query));
-            } else if (currentFilter === 'memes') {
-                const memes = ['PEPEUSDT', 'SHIBUSDT', 'BTTCUSDT', 'DOGEUSDT', 'FLOKIUSDT', 'BONKUSDT', 'WIFUSDT', 'BOMEUSDT'];
-                list = list.filter(c => memes.includes(c.symbol));
-            } else if (currentFilter === 'gainers') {
-                list.sort((a, b) => parseFloat(b.priceChangePercent) - parseFloat(a.priceChangePercent));
-                list = list.slice(0, 20);
-            } else if (currentFilter === 'losers') {
-                list.sort((a, b) => parseFloat(a.priceChangePercent) - parseFloat(b.priceChangePercent));
-                list = list.slice(0, 20);
-            } else {
-                // العملات الرئيسية والقوية مرتبة حسب الحجم
-                list.sort((a, b) => parseFloat(b.volume) - parseFloat(a.volume));
-                list = list.slice(0, 40);
-            }
+            if (query) list = list.filter(c => c.symbol.includes(query));
+            list.sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume));
+            list = list.slice(0, 50);
 
             list.forEach(coin => {
                 let sym = coin.symbol.replace('USDT', '');
                 let price = parseFloat(coin.lastPrice);
                 let chg = parseFloat(coin.priceChangePercent).toFixed(2);
                 let isUp = chg >= 0;
-                let isSelected = coin.symbol === currentSymbol;
 
-                let card = document.createElement('div');
-                card.className = `coin-card ${isSelected ? 'active' : ''}`;
-                card.onclick = () => {
+                let row = document.createElement('div');
+                row.className = 'coin-row';
+                row.onclick = () => {
                     currentSymbol = coin.symbol;
-                    renderUI();
+                    switchTab('trade', document.querySelectorAll('.tab-btn')[1]);
                 };
-
-                card.innerHTML = `
-                    <div class="c-sym">${sym}</div>
-                    <div class="c-price">${formatPrecisePrice(price)}</div>
-                    <div class="c-chg ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${chg}%</div>
+                row.innerHTML = `
+                    <div class="c-info">
+                        <div>${sym} / USDT</div>
+                        <div>حجم التداول: ${(parseFloat(coin.quoteVolume)/1000000).toFixed(1)}M</div>
+                    </div>
+                    <div class="c-price-box">
+                        <div class="c-price">${formatPrecisePrice(price)}</div>
+                        <div class="c-chg ${isUp ? 'up' : 'down'}">${isUp ? '+' : ''}${chg}%</div>
+                    </div>
                 `;
-                scroll.appendChild(card);
+                container.appendChild(row);
             });
-
-            let selected = rawData.find(c => c.symbol === currentSymbol) || rawData[0];
-            if (selected) updateDetails(selected);
         }
 
-        function updateDetails(coin) {
+        function updateTradeView() {
+            let coin = rawData.find(c => c.symbol === currentSymbol) || rawData[0];
+            if (!coin) return;
             let sym = coin.symbol.replace('USDT', '');
-            document.getElementById('p-title').innerText = `${sym} / USDT`;
-
             let price = parseFloat(coin.lastPrice);
-            document.getElementById('m-price').innerText = formatPrecisePrice(price);
 
-            let chg = parseFloat(coin.priceChangePercent).toFixed(2);
-            let isUp = chg >= 0;
-            let chgEl = document.getElementById('m-change');
-            chgEl.innerText = (isUp ? '+' : '') + chg + '%';
-            chgEl.className = 'm-val ' + (isUp ? 'up' : 'down');
-
-            let high = parseFloat(coin.highPrice);
-            let low = parseFloat(coin.lowPrice);
-            document.getElementById('m-highlow').innerText = `${formatPrecisePrice(high)} \n ${formatPrecisePrice(low)}`;
-
-            let volNum = (parseFloat(coin.quoteVolume) / 1000000).toFixed(2);
-            document.getElementById('m-volume').innerText = `${volNum}M USDT`;
-
-            document.getElementById('conv-label').innerText = `1 ${sym} =`;
-            convertCurrency();
+            document.getElementById('trade-title').innerText = `${sym} / USDT`;
+            document.getElementById('trade-price').innerText = formatPrecisePrice(price);
+            calculateTrade();
             drawChart(coin);
         }
 
-        function convertCurrency() {
+        function calculateTrade() {
             let coin = rawData.find(c => c.symbol === currentSymbol);
             if (!coin) return;
             let price = parseFloat(coin.lastPrice);
-            let qty = parseFloat(document.getElementById('qty-input').value) || 0;
+            let qty = parseFloat(document.getElementById('calc-qty').value) || 0;
             let total = qty * price;
-            document.getElementById('res-input').value = total >= 1 ? '$' + total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 4}) : '$' + total.toFixed(8);
+            document.getElementById('calc-result').value = total >= 1 ? '$' + total.toFixed(2) : '$' + total.toFixed(8);
         }
 
         function drawChart(coin) {
-            let ctx = document.getElementById('mainChart').getContext('2d');
+            let ctx = document.getElementById('enterpriseChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
             let base = parseFloat(coin.lastPrice);
             let chg = parseFloat(coin.priceChangePercent) / 100;
-            let pastPrice = base / (1 + chg);
-
-            // توليد نقاط واقعية مستندة لتغير السعر اليومي
-            let p1 = pastPrice;
-            let p2 = pastPrice + (base - pastPrice) * 0.3;
-            let p3 = pastPrice + (base - pastPrice) * 0.6;
-            let p4 = pastPrice + (base - pastPrice) * 0.85;
+            let past = base / (1 + chg);
 
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['قبل 24س', 'الوقت السابق', 'منتصف الجلسة', 'قبل قليل', 'السعر الحالي'],
+                    labels: ['قبل 24س', 'فترة 1', 'فترة 2', 'فترة 3', 'السعر الحالي'],
                     datasets: [{
-                        label: 'السعر',
-                        data: [p1, p2, p3, p4, base],
+                        data: [past, past + (base-past)*0.3, past + (base-past)*0.6, past + (base-past)*0.85, base],
                         borderColor: '#58a6ff',
                         backgroundColor: 'rgba(88, 166, 255, 0.1)',
                         fill: true,
-                        tension: 0.35,
+                        tension: 0.3,
                         borderWidth: 2,
                         pointRadius: 2
                     }]
@@ -279,8 +275,91 @@
             });
         }
 
-        fetchMarket();
-        setInterval(fetchMarket, 10000);
-    </script>
-</body>
-</html>
+        function addToPortfolio() {
+            let sym = document.getElementById('p-sym').value.toUpperCase().trim();
+            let amount = parseFloat(document.getElementById('p-amount').value);
+            if (!sym || isNaN(amount) || amount <= 0) {
+                alert('الرجاء إدخال بيانات صحيحة');
+                return;
+            }
+            portfolio.push({ symbol: sym + 'USDT', amount: amount });
+            localStorage.setItem('crypto_portfolio', JSON.stringify(portfolio));
+            document.getElementById('p-sym').value = '';
+            document.getElementById('p-amount').value = '';
+            renderPortfolio();
+            alert('تمت الإضافة بنجاح للمحفظة!');
+        }
+
+        function renderPortfolio() {
+            let container = document.getElementById('portfolio-items');
+            let totalVal = 0;
+            if (portfolio.length === 0) {
+                container.innerHTML = 'لا توجد صفقات مضافة حالياً.';
+                document.getElementById('port-total').innerText = '$0.00';
+                return;
+            }
+            container.innerHTML = '';
+            portfolio.forEach((item, index) => {
+                let coin = rawData.find(c => c.symbol === item.symbol);
+                let price = coin ? parseFloat(coin.lastPrice) : 0;
+                let val = price * item.amount;
+                totalVal += val;
+
+                let row = document.createElement('div');
+                row.className = 'coin-row';
+                row.innerHTML = `
+                    <div class="c-info">
+                        <div>${item.symbol.replace('USDT', '')}</div>
+                        <div>الكمية: ${item.amount}</div>
+                    </div>
+                    <div class="c-price-box">
+                        <div class="c-price">${formatPrecisePrice(val)}</div>
+                        <button style="background:#f85149; color:#fff; border:none; padding:2px 6px; border-radius:4px; font-size:0.65rem; cursor:pointer; margin-top:3px;" onclick="removePortfolio(${index})">حذف</button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+            document.getElementById('port-total').innerText = formatPrecisePrice(totalVal);
+        }
+
+        function removePortfolio(index) {
+            portfolio.splice(index, 1);
+            localStorage.setItem('crypto_portfolio', JSON.stringify(portfolio));
+            renderPortfolio();
+        }
+
+        function renderAnalytics() {
+            let container = document.getElementById('analytics-list');
+            container.innerHTML = '';
+            let topCoins = rawData.filter(c => c.symbol.endsWith('USDT')).slice(0, 10);
+            topCoins.forEach(coin => {
+                let sym = coin.symbol.replace('USDT', '');
+                let chg = parseFloat(coin.priceChangePercent);
+
+cd ~/crypto_app
+
+cat << 'EOF' >> www/index.html
+                    let rsi = (50 + chg * 1.5).toFixed(1);
+                    let signal = rsi > 70 ? 'تشبع شراء (بيع محتمل)' : (rsi < 30 ? 'تشبع بيع (فرصة شراء)' : 'استقرار واتجاه محايد');
+                    let sigColor = rsi > 70 ? 'down' : (rsi < 30 ? 'up' : '');
+
+                    let row = document.createElement('div');
+                    row.className = 'coin-row';
+                    row.innerHTML = `
+                        <div class="c-info">
+                            <div>${sym} - مؤشر القوة (RSI: ${rsi})</div>
+                            <div class="${sigColor}" style="font-weight:bold; margin-top:2px;">${signal}</div>
+                        </div>
+                        <div class="c-price-box">
+                            <div class="c-price">${formatPrecisePrice(parseFloat(coin.lastPrice))}</div>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+
+            fetchMarket();
+            setInterval(fetchMarket, 10000);
+        </script>
+    </body>
+    </html>
